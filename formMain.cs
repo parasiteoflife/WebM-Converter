@@ -439,7 +439,7 @@ namespace MasterOfWebM
             txtInput.Text = txtOutput.Text = txtSubs.Text = txtLength.Text = txtWidth.Text = "";
             txtTimeStart.Text = "HH:MM:SS";
             txtTimeStart.ForeColor = Color.Silver;
-            txtMaxSize.Text = "3";
+            txtMaxSize.Text = "4";
             txtCrop.Text = "o_w:o_h:x:y";
             txtCrop.ForeColor = Color.Silver;
             txtTitle.Text = "";
