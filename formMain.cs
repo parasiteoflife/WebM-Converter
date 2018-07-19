@@ -83,8 +83,16 @@ namespace MasterOfWebM
             // Validates if the user input a value for txtOutput
             if (txtOutput.Text == "")
             {
-                verified = false;
-                MessageBox.Show("An output file needs to be selected", "Verification Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (!txtInput.Text.EndsWith(".webm"))
+                {
+                    // Keep filename, but chenge extension to "webm"
+                    txtOutput.Text = txtInput.Text.Substring(0, txtInput.Text.LastIndexOf(".")) + ".webm";
+                }
+                else
+                {
+                    // Add another extension to avoid everwriting original file.
+                    txtOutput.Text = txtInput.Text + ".webm";
+                }
             }
 
             // Validates if the user input a value for txtTimeStart
