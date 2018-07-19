@@ -265,6 +265,11 @@ namespace MasterOfWebM
                 baseCommand = baseCommand.Replace("{metadata}", "");
             }
 
+            if (verified && !overwriteExistingFileIfExists())
+            {
+                verified = false;
+            }
+
             // If everything is valid, continue with the conversion
             if (verified)
             {
@@ -482,5 +487,26 @@ namespace MasterOfWebM
             string zeroes = "00:00:00";
             return zeroes.Substring(0, zeroes.Length - timeInput.Length) + timeInput;
         }
+
+        private bool overwriteExistingFileIfExists()
+        {
+            FileInfo fi = new FileInfo(txtOutput.Text);
+            if (fi.Exists)
+            {
+                DialogResult dialogResult = MessageBox.Show("Overwrite " + txtOutput.Text + "?", "Output file exists", MessageBoxButtons.YesNo);
+                if (dialogResult == DialogResult.No)
+                {
+                    saveFileDialog1.FileName = txtOutput.Text;
+                    if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+                    {
+                        txtOutput.Text = saveFileDialog1.FileName;
+                        return true;
+                    }
+                    return false;
+                }
+            }
+            return true;
+        }
+
     }
 }
