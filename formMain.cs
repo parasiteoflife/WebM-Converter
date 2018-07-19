@@ -17,7 +17,7 @@ namespace MasterOfWebM
         private String runningDirectory = AppDomain.CurrentDomain.BaseDirectory;    // Obtains the root directory
 
         Regex verifyLength = new Regex(@"^\d{1,3}");                                // Regex to verify if txtLength is properly typed in
-        Regex verifyTimeStart = new Regex(@"^[0-6]\d:[0-6]\d:[0-6]\d");             // Regex to verify if txtStartTime is properly typed in
+        Regex verifyTimeStart = new Regex(@"^[0-6]?\d:[0-6]\d:[0-6]\d|[0-6]?\d:[0-6]\d|[0-6]?\d"); // Regex to verify if txtStartTime is properly typed in 
         Regex verifyWidth = new Regex(@"^\d{1,4}");                                 // Regex to verify if txtWidth is properly typed in
         Regex verifyMaxSize = new Regex(@"^\d{1,4}");                               // Regex to verify if txtMaxSize is properly typed in
         Regex verifyCrop = new Regex(@"^\d{1,4}:\d{1,4}:\d{1,4}:\d{1,4}");          // Regex to verify if txtCrop is properly typed in
@@ -95,6 +95,13 @@ namespace MasterOfWebM
             }
             else
             {
+                if (txtTimeStart.Text.Length < 8)
+                {
+                    // Input is valid against regex, but we have to add missing zeroes
+                    string correctedTimeInput = fillMissingZeroes(txtTimeStart.Text);
+                    txtTimeStart.Text = correctedTimeInput;
+                }
+
                 // Calculates the seconds from the time-code
                 double seconds = Helper.convertToSeconds(txtTimeStart.Text);
 
@@ -453,6 +460,19 @@ namespace MasterOfWebM
             var files = (string[])e.Data.GetData(DataFormats.FileDrop);
 
             txtInput.Text = files[0];
+        }
+
+        // Converts input to HH:MM:SS format.
+        //        1 -> 00:00:01
+        //       11 -> 00:00:11
+        //     1:11 -> 00:01:11
+        //    11:11 -> 00:11:11
+        //  1:11:11 -> 01:11:11
+        // 11:11:11 -> 11:11:11
+        private string fillMissingZeroes(string timeInput)
+        {
+            string zeroes = "00:00:00";
+            return zeroes.Substring(0, zeroes.Length - timeInput.Length) + timeInput;
         }
     }
 }
