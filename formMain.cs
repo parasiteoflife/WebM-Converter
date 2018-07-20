@@ -85,12 +85,12 @@ namespace MasterOfWebM
             {
                 if (!txtInput.Text.EndsWith(".webm"))
                 {
-                    // Keep filename, but chenge extension to "webm"
+                    // Keep filename, but change extension to "webm"
                     txtOutput.Text = txtInput.Text.Substring(0, txtInput.Text.LastIndexOf(".")) + ".webm";
                 }
                 else
                 {
-                    // Add another extension to avoid everwriting original file.
+                    // Add another extension to avoid overwriting original file.
                     txtOutput.Text = txtInput.Text + ".webm";
                 }
             }
