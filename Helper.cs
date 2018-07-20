@@ -249,7 +249,7 @@ namespace MasterOfWebM
 
             if (appVersion.CompareTo(newVersion) < 0)
             {
-                if (MessageBox.Show("You are currently out of date.\nWould you like to update now?", "Version out of date", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+                if (MessageBox.Show("You are currently out of date.\nWould you like to update now? Remember to apply your github changes! :)", "Version out of date", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
                 {
                     var update = Process.Start(downloadUrl);
                 }
