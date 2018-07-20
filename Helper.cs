@@ -68,10 +68,12 @@ namespace MasterOfWebM
             String commandPass2 = "-pass 2 ";
 
             // Pass 1
+            //Debug.WriteLine("executing pass1: ffmpeg " + command + commandPass1);
             var pass1 = Process.Start("ffmpeg", command + commandPass1);
             pass1.WaitForExit();
 
             // Pass 2
+            //Debug.WriteLine("executing pass2: ffmpeg " + command + commandPass2 + "\"" + fileOutput + "\"");
             var pass2 = Process.Start("ffmpeg", command + commandPass2 + "\"" + fileOutput + "\"");
             pass2.WaitForExit();
         }
@@ -122,6 +124,7 @@ namespace MasterOfWebM
                 }
                 else
                 {
+                    // MessageBox.Show("missing file: " + output + "\\fonts\\fonts.conf");
                     if (Directory.Exists(output + "\\fonts"))
                     {
                         // If the directory actually exists, just write the config file
