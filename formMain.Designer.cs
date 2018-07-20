@@ -211,7 +211,7 @@
             this.txtMaxSize.Name = "txtMaxSize";
             this.txtMaxSize.Size = new System.Drawing.Size(69, 20);
             this.txtMaxSize.TabIndex = 6;
-            this.txtMaxSize.Text = "3";
+            this.txtMaxSize.Text = "4";
             this.txtMaxSize.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label2
@@ -363,7 +363,7 @@
             this.MaximizeBox = false;
             this.Name = "formMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "!WebM.y.TsM Converter";
+            this.Text = "!WebM.y.TsM Converter ++";
             this.Load += new System.EventHandler(this.formMain_Load);
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.formMain_DragDrop);
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.formMain_DragEnter);
