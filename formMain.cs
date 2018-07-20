@@ -95,6 +95,9 @@ namespace MasterOfWebM
                 }
             }
 
+            // Trick for more convenient time input. Converts "11.22.33" or "11  22  33" to "11:22:33".
+            txtTimeStart.Text = Regex.Replace(txtTimeStart.Text, "\\D+", ":");
+
             // Validates if the user input a value for txtTimeStart
             if (!verifyTimeStart.IsMatch(txtTimeStart.Text))
             {
