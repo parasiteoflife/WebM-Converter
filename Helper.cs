@@ -51,10 +51,10 @@ namespace MasterOfWebM
         {
             FileInfo fi = new FileInfo(@file);
 
-            double fileSize = fi.Length;
+                double fileSize = fi.Length;
 
-            return Math.Round(fileSize / 1024, 2);
-        }
+                return Math.Round(fileSize / 1024, 2);
+            }
 
         /// <summary>
         /// Calls ffmpeg to encode the video
@@ -92,7 +92,7 @@ namespace MasterOfWebM
             p.Start();
 
             string output = p.StandardOutput.ReadToEnd();
-
+           
             p.WaitForExit();
 
             if (output == "")
@@ -106,6 +106,10 @@ namespace MasterOfWebM
             else
             {
                 // Get rid of the newline at the end of the output
+                if (output.Contains(Environment.NewLine))
+                {
+                    output = output.Substring(0, output.IndexOf(Environment.NewLine));
+                }
                 output = output.Replace(Environment.NewLine, "");
 
                 // Get the root directory of ffmpeg
