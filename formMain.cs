@@ -377,8 +377,8 @@ namespace MasterOfWebM
             if (inputFileDialog.ShowDialog() == DialogResult.OK)
             {
                 txtInput.Text = inputFileDialog.FileName;
+                txtTimeStart.Focus();
             }
-
         }
 
         private void btnOutput_Click(object sender, EventArgs e)
@@ -386,6 +386,7 @@ namespace MasterOfWebM
             if (saveFileDialog1.ShowDialog() == DialogResult.OK)
             {
                 txtOutput.Text = saveFileDialog1.FileName;
+                txtTimeStart.Focus();
             }
         }
 
@@ -448,6 +449,7 @@ namespace MasterOfWebM
             txtTitle.Text = "";
             comboQuality.SelectedIndex = 0;
             checkAudio.Checked = false;
+            txtTimeStart.Focus();
         }
 
         private void comboQuality_SelectedIndexChanged(object sender, EventArgs e)
@@ -476,6 +478,7 @@ namespace MasterOfWebM
             var files = (string[])e.Data.GetData(DataFormats.FileDrop);
 
             txtInput.Text = files[0];
+            txtTimeStart.Focus();
         }
 
         // Converts input to HH:MM:SS format.

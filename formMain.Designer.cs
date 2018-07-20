@@ -131,7 +131,7 @@
             this.txtTimeStart.MaxLength = 8;
             this.txtTimeStart.Name = "txtTimeStart";
             this.txtTimeStart.Size = new System.Drawing.Size(69, 20);
-            this.txtTimeStart.TabIndex = 3;
+            this.txtTimeStart.TabIndex = 0;
             this.txtTimeStart.Text = "HH:MM:SS";
             this.txtTimeStart.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.txtTimeStart.Enter += new System.EventHandler(this.txtTimeStart_Enter);

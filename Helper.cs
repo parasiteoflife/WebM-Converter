@@ -190,7 +190,7 @@ namespace MasterOfWebM
         {
             new Thread(() =>
             {
-                Thread.CurrentThread.IsBackground = true;
+                Thread.CurrentThread.IsBackground = false;
                 checkUpdate();
             }).Start();
         }
