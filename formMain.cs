@@ -397,7 +397,7 @@ namespace MasterOfWebM
                 btnConvert.Enabled = false;
             }
 
-            Helper.checkUpdate();
+            Helper.checkUpdateInNewThread();
         }
 
         // Handles when the user focuses txtCrop

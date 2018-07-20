@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
+using System.Threading;
 
 namespace MasterOfWebM
 {
@@ -180,6 +181,15 @@ namespace MasterOfWebM
                     }
                 }
             }
+        }
+
+        public static void checkUpdateInNewThread()
+        {
+            new Thread(() =>
+            {
+                Thread.CurrentThread.IsBackground = true;
+                checkUpdate();
+            }).Start();
         }
 
         /// <summary>
