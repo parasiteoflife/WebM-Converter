@@ -27,7 +27,12 @@ namespace MasterOfWebM
         /// </summary>
         /// <param name="input">A string that is formatted as HH:MM:SS</param>
         /// <returns>The seconds.</returns>
-        public static double convertToSeconds(String input) {
+        public static double convertToSeconds(String input)
+        {
+            if (input.Contains("."))
+            {
+                input = input.Substring(0, input.LastIndexOf("."));
+            }
             string[] time = input.Split(':');
             return Convert.ToDouble(time[0]) * 3600 + Convert.ToDouble(time[1]) * 60 + Convert.ToDouble(time[2]);
         }
@@ -186,6 +191,15 @@ namespace MasterOfWebM
             }
         }
 
+        public static string getMillisFromTimeStart(string text)
+        {
+            if (text.Contains("."))
+            {
+                return text.Substring(text.IndexOf("."));
+            }
+            return "";
+        }
+
         public static void checkUpdateInNewThread()
         {
             new Thread(() =>
@@ -273,6 +287,27 @@ namespace MasterOfWebM
             {
                 File.Delete("subs.srt");
             }
+        }
+
+        /// Converts input to HH:MM:SS format.
+        ///        1   -> 00:00:01
+        ///       11   -> 00:00:11
+        ///     1:11   -> 00:01:11
+        ///    11:11   -> 00:11:11
+        ///  1:11:11   -> 01:11:11
+        /// 11:11:11   -> 11:11:11
+        ///       11.5 -> 00:00:11.5
+        ///    11:11.3 -> 00:11:11.3
+        public static string fillMissingZeroes(string timeInput)
+        {
+            string millis = "";
+            if (timeInput.Contains("."))
+            {
+                millis = timeInput.Substring(timeInput.LastIndexOf("."));
+                timeInput = timeInput.Substring(0, timeInput.LastIndexOf("."));
+            }
+            string zeroes = "00:00:00";
+            return zeroes.Substring(0, zeroes.Length - timeInput.Length) + timeInput + millis;
         }
     }
 }

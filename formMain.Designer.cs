@@ -128,11 +128,11 @@
             // 
             this.txtTimeStart.ForeColor = System.Drawing.Color.Silver;
             this.txtTimeStart.Location = new System.Drawing.Point(75, 91);
-            this.txtTimeStart.MaxLength = 8;
+            this.txtTimeStart.MaxLength = 10;
             this.txtTimeStart.Name = "txtTimeStart";
             this.txtTimeStart.Size = new System.Drawing.Size(69, 20);
             this.txtTimeStart.TabIndex = 0;
-            this.txtTimeStart.Text = "HH:MM:SS";
+            this.txtTimeStart.Text = "HH:MM:SS.m";
             this.txtTimeStart.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.txtTimeStart.Enter += new System.EventHandler(this.txtTimeStart_Enter);
             this.txtTimeStart.Leave += new System.EventHandler(this.txtTimeStart_Leave);

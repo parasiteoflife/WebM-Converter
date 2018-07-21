@@ -17,7 +17,7 @@ namespace MasterOfWebM
         private String runningDirectory = AppDomain.CurrentDomain.BaseDirectory;    // Obtains the root directory
 
         Regex verifyLength = new Regex(@"^\d{1,3}");                                // Regex to verify if txtLength is properly typed in
-        Regex verifyTimeStart = new Regex(@"^[0-6]?\d:[0-6]\d:[0-6]\d|[0-6]?\d:[0-6]\d|[0-6]?\d"); // Regex to verify if txtStartTime is properly typed in 
+        Regex verifyTimeStart = new Regex(@"^((([0-6]?\d\D+)?[0-6]?\d\D+)?[0-6]?\d)(\.\d)?$"); // Regex to verify if txtStartTime is properly typed in 
         Regex verifyWidth = new Regex(@"^\d{1,4}");                                 // Regex to verify if txtWidth is properly typed in
         Regex verifyMaxSize = new Regex(@"^\d{1,4}");                               // Regex to verify if txtMaxSize is properly typed in
         Regex verifyCrop = new Regex(@"^\d{1,4}:\d{1,4}:\d{1,4}:\d{1,4}");          // Regex to verify if txtCrop is properly typed in
@@ -33,7 +33,7 @@ namespace MasterOfWebM
         // As soon as the user clicks on txtTimeStart, get rid of the informational text
         private void txtTimeStart_Enter(object sender, EventArgs e)
         {
-            if (txtTimeStart.Text == "HH:MM:SS")
+            if (txtTimeStart.Text == "HH:MM:SS.m")
             {
                 txtTimeStart.Text = "";
                 txtTimeStart.ForeColor = Color.Black;
@@ -46,7 +46,7 @@ namespace MasterOfWebM
         {
             if (txtTimeStart.Text == "")
             {
-                txtTimeStart.Text = "HH:MM:SS";
+                txtTimeStart.Text = "HH:MM:SS.m";
                 txtTimeStart.ForeColor = Color.Silver;
             }
         }
@@ -95,47 +95,41 @@ namespace MasterOfWebM
                 }
             }
 
-            // Trick for more convenient time input. Converts "11.22.33" or "11  22  33" to "11:22:33".
-            txtTimeStart.Text = Regex.Replace(txtTimeStart.Text, "\\D+", ":");
+            // Trick for more convenient time input. Converts "11x22x33.5" or "11  22  33.5" to "11:22:33.5".
+            txtTimeStart.Text = Regex.Replace(txtTimeStart.Text.Trim(), "[^\\d.]+", ":");
 
             // Validates if the user input a value for txtTimeStart
             if (!verifyTimeStart.IsMatch(txtTimeStart.Text))
             {
                 verified = false;
-                MessageBox.Show("The time format is messed up.\nPlease use HH:MM:SS", "Verification Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("The time format is messed up.\nPlease use HH:MM:SS.m", "Verification Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             else
             {
                 if (txtTimeStart.Text.Length < 8)
                 {
                     // Input is valid against regex, but we have to add missing zeroes
-                    string correctedTimeInput = fillMissingZeroes(txtTimeStart.Text);
+                    string correctedTimeInput = Helper.fillMissingZeroes(txtTimeStart.Text);
                     txtTimeStart.Text = correctedTimeInput;
                 }
 
                 // Calculates the seconds from the time-code
                 double seconds = Helper.convertToSeconds(txtTimeStart.Text);
+                string millis = Helper.getMillisFromTimeStart(txtTimeStart.Text);
 
-                if (seconds > 30)
+                if (txtSubs.Text == "")
                 {
-                    if (txtSubs.Text == "")
-                    {
-                        // If not subtitles exist
-                        baseCommand = baseCommand.Replace("{time1}", "-ss " + Convert.ToString(seconds - 30));
-                        baseCommand = baseCommand.Replace("{time2}", "-ss 30");
-                    }
-                    else
-                    {
-                        // If subtitles exist
-                        baseCommand = baseCommand.Replace(" {time1}", "");
-                        baseCommand = baseCommand.Replace("{time2}", "-ss " + Convert.ToString(seconds));
-                    }
+                    // If not subtitles exist
+                    baseCommand = baseCommand.Replace(" {time1}", "");
+                    baseCommand = baseCommand.Replace("{time2}", "-ss " + seconds + millis);
                 }
                 else
                 {
+                    // If subtitles exist
                     baseCommand = baseCommand.Replace(" {time1}", "");
-                    baseCommand = baseCommand.Replace("{time2}", "-ss " + seconds);
+                    baseCommand = baseCommand.Replace("{time2}", "-ss " + Convert.ToString(seconds) + millis);
                 }
+               
             }
 
             // Validates if the user input a value for txtLength
@@ -441,7 +435,7 @@ namespace MasterOfWebM
         private void btnClear_Click(object sender, EventArgs e)
         {
             txtInput.Text = txtOutput.Text = txtSubs.Text = txtLength.Text = txtWidth.Text = "";
-            txtTimeStart.Text = "HH:MM:SS";
+            txtTimeStart.Text = "HH:MM:SS.m";
             txtTimeStart.ForeColor = Color.Silver;
             txtMaxSize.Text = "4";
             txtCrop.Text = "o_w:o_h:x:y";
@@ -479,19 +473,6 @@ namespace MasterOfWebM
 
             txtInput.Text = files[0];
             txtTimeStart.Focus();
-        }
-
-        // Converts input to HH:MM:SS format.
-        //        1 -> 00:00:01
-        //       11 -> 00:00:11
-        //     1:11 -> 00:01:11
-        //    11:11 -> 00:11:11
-        //  1:11:11 -> 01:11:11
-        // 11:11:11 -> 11:11:11
-        private string fillMissingZeroes(string timeInput)
-        {
-            string zeroes = "00:00:00";
-            return zeroes.Substring(0, zeroes.Length - timeInput.Length) + timeInput;
         }
 
         private bool overwriteExistingFileIfExists()
