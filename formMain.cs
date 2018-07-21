@@ -81,7 +81,7 @@ namespace MasterOfWebM
             }
 
             // Validates if the user input a value for txtOutput
-            if (txtOutput.Text != "")
+            if (txtOutput.Text == "" && txtInput.Text != "")
             {
                 if (!txtInput.Text.EndsWith(".webm"))
                 {
