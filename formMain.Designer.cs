@@ -121,7 +121,7 @@
             this.txtLength.MaxLength = 3;
             this.txtLength.Name = "txtLength";
             this.txtLength.Size = new System.Drawing.Size(69, 20);
-            this.txtLength.TabIndex = 4;
+            this.txtLength.TabIndex = 1;
             this.txtLength.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // txtTimeStart
