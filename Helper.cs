@@ -191,15 +191,6 @@ namespace MasterOfWebM
             }
         }
 
-        public static string getMillisFromTimeStart(string text)
-        {
-            if (text.Contains("."))
-            {
-                return text.Substring(text.IndexOf("."));
-            }
-            return "";
-        }
-
         public static void checkUpdateInNewThread()
         {
             new Thread(() =>
@@ -289,6 +280,7 @@ namespace MasterOfWebM
             }
         }
 
+        /// <summary>
         /// Converts input to HH:MM:SS format.
         ///        1   -> 00:00:01
         ///       11   -> 00:00:11
@@ -298,16 +290,47 @@ namespace MasterOfWebM
         /// 11:11:11   -> 11:11:11
         ///       11.5 -> 00:00:11.5
         ///    11:11.3 -> 00:11:11.3
+        /// </summary>
+        /// <param name="timeInput"></param>
+        /// <returns></returns>
         public static string fillMissingZeroes(string timeInput)
         {
             string millis = "";
             if (timeInput.Contains("."))
             {
-                millis = timeInput.Substring(timeInput.LastIndexOf("."));
-                timeInput = timeInput.Substring(0, timeInput.LastIndexOf("."));
+                millis = getMillisFromTimeStart(timeInput);
+                timeInput = getHHMMSSFromTimeStart(timeInput);
             }
             string zeroes = "00:00:00";
             return zeroes.Substring(0, zeroes.Length - timeInput.Length) + timeInput + millis;
+        }
+
+        /// <summary>
+        /// Gets ".Y" part from "XX:XX:XX.Y"
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        public static string getMillisFromTimeStart(string text)
+        {
+            if (text.Contains("."))
+            {
+                return text.Substring(text.IndexOf("."));
+            }
+            return "";
+        }
+
+        /// <summary>
+        /// Gets "XX:XX:XX" part from "XX:XX:XX.Y"
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        public static string getHHMMSSFromTimeStart(string text)
+        {
+            if (text.Contains("."))
+            {
+                text = text.Substring(0, text.LastIndexOf("."));
+            }
+            return text;
         }
     }
 }

@@ -97,6 +97,7 @@ namespace MasterOfWebM
 
             // Trick for more convenient time input. Converts "11x22x33.5" or "11  22  33.5" to "11:22:33.5".
             txtTimeStart.Text = Regex.Replace(txtTimeStart.Text.Trim(), "[^\\d.]+", ":");
+            txtTimeStart.Text = tryToParseOnlyNumbersAsHHMMSS(txtTimeStart.Text);
 
             // Validates if the user input a value for txtTimeStart
             if (!verifyTimeStart.IsMatch(txtTimeStart.Text))
@@ -129,7 +130,7 @@ namespace MasterOfWebM
                     baseCommand = baseCommand.Replace(" {time1}", "");
                     baseCommand = baseCommand.Replace("{time2}", "-ss " + Convert.ToString(seconds) + millis);
                 }
-               
+
             }
 
             // Validates if the user input a value for txtLength
@@ -364,6 +365,24 @@ namespace MasterOfWebM
 
             // Re-enable the button after a run
             btnConvert.Enabled = true;
+        }
+
+        private string tryToParseOnlyNumbersAsHHMMSS(string time)
+        {
+            string millis = Helper.getMillisFromTimeStart(time);
+            time = Helper.getHHMMSSFromTimeStart(time);
+            if (int.TryParse(time, out int unused))
+            {
+                if (time.Length > 2)
+                {
+                    time = time.Substring(0, time.Length - 2) + ":" + time.Substring(time.Length - 2);
+                }
+                if (time.Length > 5)
+                {
+                    time = time.Substring(0, time.Length - 5) + ":" + time.Substring(time.Length - 5);
+                }
+            }
+            return time + millis;
         }
 
         private void btnInput_Click(object sender, EventArgs e)
