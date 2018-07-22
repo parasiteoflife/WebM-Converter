@@ -492,6 +492,9 @@ namespace MasterOfWebM
 
             txtInput.Text = files[0];
             txtTimeStart.Focus();
+            //bring to front after drag&drop
+            this.TopMost = true;
+            this.TopMost = false;
         }
 
         private bool overwriteExistingFileIfExists()
