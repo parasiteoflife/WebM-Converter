@@ -87,6 +87,10 @@ namespace MasterOfWebM
                 {
                     // Keep filename, but change extension to "webm"
                     txtOutput.Text = txtInput.Text.Substring(0, txtInput.Text.LastIndexOf(".")) + ".webm";
+                    if (!overwriteExistingFileIfExists())
+                    {
+                        verified = false;
+                    }
                 }
                 else
                 {
@@ -261,11 +265,6 @@ namespace MasterOfWebM
             else
             {
                 baseCommand = baseCommand.Replace("{metadata}", "");
-            }
-
-            if (verified && !overwriteExistingFileIfExists())
-            {
-                verified = false;
             }
 
             // If everything is valid, continue with the conversion
