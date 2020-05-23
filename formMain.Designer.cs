@@ -305,6 +305,8 @@
             // checkAudio
             // 
             this.checkAudio.AutoSize = true;
+            this.checkAudio.Checked = true;
+            this.checkAudio.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkAudio.Location = new System.Drawing.Point(249, 172);
             this.checkAudio.Name = "checkAudio";
             this.checkAudio.Size = new System.Drawing.Size(15, 14);
