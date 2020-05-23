@@ -518,7 +518,10 @@ namespace MasterOfWebM
 
         private void buttonPlay_Click(object sender, EventArgs e)
         {
-            Process.Start(txtInput.Text);
+            if (txtInput.Text.Length > 0 && new FileInfo(txtInput.Text).Exists)
+            {
+                Process.Start(txtInput.Text);
+            }
         }
     }
 }
