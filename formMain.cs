@@ -516,5 +516,9 @@ namespace MasterOfWebM
             return true;
         }
 
+        private void buttonPlay_Click(object sender, EventArgs e)
+        {
+            Process.Start(txtInput.Text);
+        }
     }
 }

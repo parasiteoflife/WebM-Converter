@@ -58,6 +58,7 @@
             this.checkAudio = new System.Windows.Forms.CheckBox();
             this.label8 = new System.Windows.Forms.Label();
             this.txtTitle = new System.Windows.Forms.TextBox();
+            this.buttonPlay = new System.Windows.Forms.Button();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -94,7 +95,7 @@
             this.txtInput.Location = new System.Drawing.Point(75, 12);
             this.txtInput.Name = "txtInput";
             this.txtInput.ReadOnly = true;
-            this.txtInput.Size = new System.Drawing.Size(216, 20);
+            this.txtInput.Size = new System.Drawing.Size(189, 20);
             this.txtInput.TabIndex = 1;
             // 
             // label5
@@ -327,12 +328,24 @@
             this.txtTitle.TabIndex = 16;
             this.txtTitle.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
+            // buttonPlay
+            // 
+            this.buttonPlay.Location = new System.Drawing.Point(267, 12);
+            this.buttonPlay.Margin = new System.Windows.Forms.Padding(0);
+            this.buttonPlay.Name = "buttonPlay";
+            this.buttonPlay.Size = new System.Drawing.Size(24, 23);
+            this.buttonPlay.TabIndex = 17;
+            this.buttonPlay.Text = "▶";
+            this.buttonPlay.UseVisualStyleBackColor = true;
+            this.buttonPlay.Click += new System.EventHandler(this.buttonPlay_Click);
+            // 
             // formMain
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(303, 253);
+            this.Controls.Add(this.buttonPlay);
             this.Controls.Add(this.txtTitle);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.checkAudio);
@@ -405,6 +418,7 @@
         private System.Windows.Forms.CheckBox checkAudio;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.TextBox txtTitle;
+        private System.Windows.Forms.Button buttonPlay;
     }
 }
 
