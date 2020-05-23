@@ -44,6 +44,7 @@
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.lblThreads = new System.Windows.Forms.ToolStripStatusLabel();
+            this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.label1 = new System.Windows.Forms.Label();
             this.txtMaxSize = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -181,7 +182,8 @@
             // statusStrip1
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.lblThreads});
+            this.lblThreads,
+            this.statusLabel});
             this.statusStrip1.Location = new System.Drawing.Point(0, 231);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(303, 22);
@@ -194,6 +196,13 @@
             this.lblThreads.Name = "lblThreads";
             this.lblThreads.Size = new System.Drawing.Size(52, 17);
             this.lblThreads.Text = "Threads:";
+            // 
+            // statusLabel
+            // 
+            this.statusLabel.BackColor = System.Drawing.SystemColors.Control;
+            this.statusLabel.Margin = new System.Windows.Forms.Padding(5, 3, 0, 2);
+            this.statusLabel.Name = "statusLabel";
+            this.statusLabel.Size = new System.Drawing.Size(0, 17);
             // 
             // label1
             // 
@@ -421,6 +430,7 @@
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.TextBox txtTitle;
         private System.Windows.Forms.Button buttonPlay;
+        private System.Windows.Forms.ToolStripStatusLabel statusLabel;
     }
 }
 

@@ -265,10 +265,10 @@ namespace MasterOfWebM
             if (verified)
             {
                 baseCommand = baseCommand.Replace("{threads}", THREADS);
-
                 try
                 {
                     Helper.encodeVideo(baseCommand, txtOutput.Text);
+                    statusLabel.Text = " last success: " + generateFilenamePartBasedOnTimeSelection();
                 }
                 catch (Win32Exception ex)
                 {
@@ -461,6 +461,7 @@ namespace MasterOfWebM
             comboQuality.SelectedIndex = 0;
             checkAudio.Checked = false;
             txtTimeStart.Focus();
+            statusLabel.BackColor = SystemColors.Control;
         }
 
         private void comboQuality_SelectedIndexChanged(object sender, EventArgs e)
