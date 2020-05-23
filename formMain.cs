@@ -459,7 +459,7 @@ namespace MasterOfWebM
             txtCrop.ForeColor = Color.Silver;
             txtTitle.Text = "";
             comboQuality.SelectedIndex = 0;
-            checkAudio.Checked = false;
+            checkAudio.Checked = true;
             txtTimeStart.Focus();
             statusLabel.BackColor = SystemColors.Control;
         }
