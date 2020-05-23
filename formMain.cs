@@ -80,22 +80,16 @@ namespace MasterOfWebM
                 baseCommand = baseCommand.Replace("{input}", txtInput.Text);
             }
 
-            // Validates if the user input a value for txtOutput
+            // Generate filename if user input for output file is empty
             if (txtOutput.Text == "" && txtInput.Text != "")
             {
-                if (!txtInput.Text.EndsWith(".webm"))
+                // Keep filename, but change extension to "webm"
+                txtOutput.Text = txtInput.Text.Substring(0, txtInput.Text.LastIndexOf(".")) + ".webm";
+                txtOutput.Text = txtOutput.Text.Insert(txtOutput.Text.LastIndexOf("."), generateFilenamePartBasedOnTimeSelection());
+
+                if (!overwriteExistingFileIfExists())
                 {
-                    // Keep filename, but change extension to "webm"
-                    txtOutput.Text = txtInput.Text.Substring(0, txtInput.Text.LastIndexOf(".")) + ".webm";
-                    if (!overwriteExistingFileIfExists())
-                    {
-                        verified = false;
-                    }
-                }
-                else
-                {
-                    // Add another extension to avoid overwriting original file.
-                    txtOutput.Text = txtInput.Text + ".webm";
+                    verified = false;
                 }
             }
 
@@ -366,6 +360,11 @@ namespace MasterOfWebM
             btnConvert.Enabled = true;
         }
 
+        private string generateFilenamePartBasedOnTimeSelection()
+        {
+            return " " + txtTimeStart.Text.Replace(":", "").TrimStart('0') + " " + txtLength.Text;
+        }
+
         private string tryToParseOnlyNumbersAsHHMMSS(string time)
         {
             string millis = Helper.getMillisFromTimeStart(time);
@@ -510,6 +509,10 @@ namespace MasterOfWebM
                         txtOutput.Text = saveFileDialog1.FileName;
                         return true;
                     }
+                    else
+                    {
+                        txtOutput.Text = "";
+                    }
                     return false;
                 }
             }
@@ -523,5 +526,6 @@ namespace MasterOfWebM
                 Process.Start(txtInput.Text);
             }
         }
+
     }
 }
