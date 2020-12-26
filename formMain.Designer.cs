@@ -44,6 +44,7 @@
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.lblThreads = new System.Windows.Forms.ToolStripStatusLabel();
+            this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.label1 = new System.Windows.Forms.Label();
             this.txtMaxSize = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -58,6 +59,7 @@
             this.checkAudio = new System.Windows.Forms.CheckBox();
             this.label8 = new System.Windows.Forms.Label();
             this.txtTitle = new System.Windows.Forms.TextBox();
+            this.buttonPlay = new System.Windows.Forms.Button();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -94,7 +96,7 @@
             this.txtInput.Location = new System.Drawing.Point(75, 12);
             this.txtInput.Name = "txtInput";
             this.txtInput.ReadOnly = true;
-            this.txtInput.Size = new System.Drawing.Size(216, 20);
+            this.txtInput.Size = new System.Drawing.Size(189, 20);
             this.txtInput.TabIndex = 1;
             // 
             // label5
@@ -121,18 +123,18 @@
             this.txtLength.MaxLength = 3;
             this.txtLength.Name = "txtLength";
             this.txtLength.Size = new System.Drawing.Size(69, 20);
-            this.txtLength.TabIndex = 4;
+            this.txtLength.TabIndex = 1;
             this.txtLength.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // txtTimeStart
             // 
             this.txtTimeStart.ForeColor = System.Drawing.Color.Silver;
             this.txtTimeStart.Location = new System.Drawing.Point(75, 91);
-            this.txtTimeStart.MaxLength = 8;
+            this.txtTimeStart.MaxLength = 10;
             this.txtTimeStart.Name = "txtTimeStart";
             this.txtTimeStart.Size = new System.Drawing.Size(69, 20);
-            this.txtTimeStart.TabIndex = 3;
-            this.txtTimeStart.Text = "HH:MM:SS";
+            this.txtTimeStart.TabIndex = 0;
+            this.txtTimeStart.Text = "HH:MM:SS.m";
             this.txtTimeStart.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.txtTimeStart.Enter += new System.EventHandler(this.txtTimeStart_Enter);
             this.txtTimeStart.Leave += new System.EventHandler(this.txtTimeStart_Leave);
@@ -180,7 +182,8 @@
             // statusStrip1
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.lblThreads});
+            this.lblThreads,
+            this.statusLabel});
             this.statusStrip1.Location = new System.Drawing.Point(0, 231);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(303, 22);
@@ -193,6 +196,13 @@
             this.lblThreads.Name = "lblThreads";
             this.lblThreads.Size = new System.Drawing.Size(52, 17);
             this.lblThreads.Text = "Threads:";
+            // 
+            // statusLabel
+            // 
+            this.statusLabel.BackColor = System.Drawing.SystemColors.Control;
+            this.statusLabel.Margin = new System.Windows.Forms.Padding(5, 3, 0, 2);
+            this.statusLabel.Name = "statusLabel";
+            this.statusLabel.Size = new System.Drawing.Size(0, 17);
             // 
             // label1
             // 
@@ -211,7 +221,7 @@
             this.txtMaxSize.Name = "txtMaxSize";
             this.txtMaxSize.Size = new System.Drawing.Size(69, 20);
             this.txtMaxSize.TabIndex = 6;
-            this.txtMaxSize.Text = "3";
+            this.txtMaxSize.Text = "4";
             this.txtMaxSize.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label2
@@ -304,6 +314,8 @@
             // checkAudio
             // 
             this.checkAudio.AutoSize = true;
+            this.checkAudio.Checked = true;
+            this.checkAudio.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkAudio.Location = new System.Drawing.Point(249, 172);
             this.checkAudio.Name = "checkAudio";
             this.checkAudio.Size = new System.Drawing.Size(15, 14);
@@ -327,12 +339,24 @@
             this.txtTitle.TabIndex = 16;
             this.txtTitle.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
+            // buttonPlay
+            // 
+            this.buttonPlay.Location = new System.Drawing.Point(267, 12);
+            this.buttonPlay.Margin = new System.Windows.Forms.Padding(0);
+            this.buttonPlay.Name = "buttonPlay";
+            this.buttonPlay.Size = new System.Drawing.Size(24, 23);
+            this.buttonPlay.TabIndex = 17;
+            this.buttonPlay.Text = "▶";
+            this.buttonPlay.UseVisualStyleBackColor = true;
+            this.buttonPlay.Click += new System.EventHandler(this.buttonPlay_Click);
+            // 
             // formMain
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(303, 253);
+            this.Controls.Add(this.buttonPlay);
             this.Controls.Add(this.txtTitle);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.checkAudio);
@@ -363,7 +387,7 @@
             this.MaximizeBox = false;
             this.Name = "formMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "!WebM.y.TsM Converter";
+            this.Text = "!WebM.y.TsM Converter ++";
             this.Load += new System.EventHandler(this.formMain_Load);
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.formMain_DragDrop);
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.formMain_DragEnter);
@@ -405,6 +429,8 @@
         private System.Windows.Forms.CheckBox checkAudio;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.TextBox txtTitle;
+        private System.Windows.Forms.Button buttonPlay;
+        private System.Windows.Forms.ToolStripStatusLabel statusLabel;
     }
 }
 

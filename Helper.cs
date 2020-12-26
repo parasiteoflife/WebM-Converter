@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
+using System.Threading;
 
 namespace MasterOfWebM
 {
@@ -26,7 +27,12 @@ namespace MasterOfWebM
         /// </summary>
         /// <param name="input">A string that is formatted as HH:MM:SS</param>
         /// <returns>The seconds.</returns>
-        public static double convertToSeconds(String input) {
+        public static double convertToSeconds(String input)
+        {
+            if (input.Contains("."))
+            {
+                input = input.Substring(0, input.LastIndexOf("."));
+            }
             string[] time = input.Split(':');
             return Convert.ToDouble(time[0]) * 3600 + Convert.ToDouble(time[1]) * 60 + Convert.ToDouble(time[2]);
         }
@@ -51,10 +57,10 @@ namespace MasterOfWebM
         {
             FileInfo fi = new FileInfo(@file);
 
-            double fileSize = fi.Length;
+                double fileSize = fi.Length;
 
-            return Math.Round(fileSize / 1024, 2);
-        }
+                return Math.Round(fileSize / 1024, 2);
+            }
 
         /// <summary>
         /// Calls ffmpeg to encode the video
@@ -67,10 +73,12 @@ namespace MasterOfWebM
             String commandPass2 = "-pass 2 ";
 
             // Pass 1
+            //Debug.WriteLine("executing pass1: ffmpeg " + command + commandPass1);
             var pass1 = Process.Start("ffmpeg", command + commandPass1);
             pass1.WaitForExit();
 
             // Pass 2
+            //Debug.WriteLine("executing pass2: ffmpeg " + command + commandPass2 + "\"" + fileOutput + "\"");
             var pass2 = Process.Start("ffmpeg", command + commandPass2 + "\"" + fileOutput + "\"");
             pass2.WaitForExit();
         }
@@ -92,7 +100,7 @@ namespace MasterOfWebM
             p.Start();
 
             string output = p.StandardOutput.ReadToEnd();
-
+           
             p.WaitForExit();
 
             if (output == "")
@@ -106,6 +114,10 @@ namespace MasterOfWebM
             else
             {
                 // Get rid of the newline at the end of the output
+                if (output.Contains(Environment.NewLine))
+                {
+                    output = output.Substring(0, output.IndexOf(Environment.NewLine));
+                }
                 output = output.Replace(Environment.NewLine, "");
 
                 // Get the root directory of ffmpeg
@@ -117,6 +129,7 @@ namespace MasterOfWebM
                 }
                 else
                 {
+                    // MessageBox.Show("missing file: " + output + "\\fonts\\fonts.conf");
                     if (Directory.Exists(output + "\\fonts"))
                     {
                         // If the directory actually exists, just write the config file
@@ -178,6 +191,15 @@ namespace MasterOfWebM
             }
         }
 
+        public static void checkUpdateInNewThread()
+        {
+            new Thread(() =>
+            {
+                Thread.CurrentThread.IsBackground = false;
+                checkUpdate();
+            }).Start();
+        }
+
         /// <summary>
         /// Verifies the version of the program.
         /// It will prompt the user if the program is
@@ -235,7 +257,7 @@ namespace MasterOfWebM
 
             if (appVersion.CompareTo(newVersion) < 0)
             {
-                if (MessageBox.Show("You are currently out of date.\nWould you like to update now?", "Version out of date", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+                if (MessageBox.Show("You are currently out of date.\nWould you like to update now? Remember to apply your github changes! :)", "Version out of date", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
                 {
                     var update = Process.Start(downloadUrl);
                 }
@@ -256,6 +278,59 @@ namespace MasterOfWebM
             {
                 File.Delete("subs.srt");
             }
+        }
+
+        /// <summary>
+        /// Converts input to HH:MM:SS format.
+        ///        1   -> 00:00:01
+        ///       11   -> 00:00:11
+        ///     1:11   -> 00:01:11
+        ///    11:11   -> 00:11:11
+        ///  1:11:11   -> 01:11:11
+        /// 11:11:11   -> 11:11:11
+        ///       11.5 -> 00:00:11.5
+        ///    11:11.3 -> 00:11:11.3
+        /// </summary>
+        /// <param name="timeInput"></param>
+        /// <returns></returns>
+        public static string fillMissingZeroes(string timeInput)
+        {
+            string millis = "";
+            if (timeInput.Contains("."))
+            {
+                millis = getMillisFromTimeStart(timeInput);
+                timeInput = getHHMMSSFromTimeStart(timeInput);
+            }
+            string zeroes = "00:00:00";
+            return zeroes.Substring(0, zeroes.Length - timeInput.Length) + timeInput + millis;
+        }
+
+        /// <summary>
+        /// Gets ".Y" part from "XX:XX:XX.Y"
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        public static string getMillisFromTimeStart(string text)
+        {
+            if (text.Contains("."))
+            {
+                return text.Substring(text.IndexOf("."));
+            }
+            return "";
+        }
+
+        /// <summary>
+        /// Gets "XX:XX:XX" part from "XX:XX:XX.Y"
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        public static string getHHMMSSFromTimeStart(string text)
+        {
+            if (text.Contains("."))
+            {
+                text = text.Substring(0, text.LastIndexOf("."));
+            }
+            return text;
         }
     }
 }

@@ -17,7 +17,7 @@ namespace MasterOfWebM
         private String runningDirectory = AppDomain.CurrentDomain.BaseDirectory;    // Obtains the root directory
 
         Regex verifyLength = new Regex(@"^\d{1,3}");                                // Regex to verify if txtLength is properly typed in
-        Regex verifyTimeStart = new Regex(@"^[0-6]\d:[0-6]\d:[0-6]\d");             // Regex to verify if txtStartTime is properly typed in
+        Regex verifyTimeStart = new Regex(@"^((([0-6]?\d\D+)?[0-6]?\d\D+)?[0-6]?\d)(\.\d)?$"); // Regex to verify if txtStartTime is properly typed in 
         Regex verifyWidth = new Regex(@"^\d{1,4}");                                 // Regex to verify if txtWidth is properly typed in
         Regex verifyMaxSize = new Regex(@"^\d{1,4}");                               // Regex to verify if txtMaxSize is properly typed in
         Regex verifyCrop = new Regex(@"^\d{1,4}:\d{1,4}:\d{1,4}:\d{1,4}");          // Regex to verify if txtCrop is properly typed in
@@ -33,7 +33,7 @@ namespace MasterOfWebM
         // As soon as the user clicks on txtTimeStart, get rid of the informational text
         private void txtTimeStart_Enter(object sender, EventArgs e)
         {
-            if (txtTimeStart.Text == "HH:MM:SS")
+            if (txtTimeStart.Text == "HH:MM:SS.m")
             {
                 txtTimeStart.Text = "";
                 txtTimeStart.ForeColor = Color.Black;
@@ -46,7 +46,7 @@ namespace MasterOfWebM
         {
             if (txtTimeStart.Text == "")
             {
-                txtTimeStart.Text = "HH:MM:SS";
+                txtTimeStart.Text = "HH:MM:SS.m";
                 txtTimeStart.ForeColor = Color.Silver;
             }
         }
@@ -80,44 +80,55 @@ namespace MasterOfWebM
                 baseCommand = baseCommand.Replace("{input}", txtInput.Text);
             }
 
-            // Validates if the user input a value for txtOutput
-            if (txtOutput.Text == "")
+            // Generate filename if user input for output file is empty
+            if (txtOutput.Text == "" && txtInput.Text != "")
             {
-                verified = false;
-                MessageBox.Show("An output file needs to be selected", "Verification Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                // Keep filename, but change extension to "webm"
+                txtOutput.Text = txtInput.Text.Substring(0, txtInput.Text.LastIndexOf(".")) + ".webm";
+                txtOutput.Text = txtOutput.Text.Insert(txtOutput.Text.LastIndexOf("."), generateFilenamePartBasedOnTimeSelection());
+
+                if (!overwriteExistingFileIfExists())
+                {
+                    verified = false;
+                }
             }
+
+            // Trick for more convenient time input. Converts "11x22x33.5" or "11  22  33.5" to "11:22:33.5".
+            txtTimeStart.Text = Regex.Replace(txtTimeStart.Text.Trim(), "[^\\d.]+", ":");
+            txtTimeStart.Text = tryToParseOnlyNumbersAsHHMMSS(txtTimeStart.Text);
 
             // Validates if the user input a value for txtTimeStart
             if (!verifyTimeStart.IsMatch(txtTimeStart.Text))
             {
                 verified = false;
-                MessageBox.Show("The time format is messed up.\nPlease use HH:MM:SS", "Verification Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("The time format is messed up.\nPlease use HH:MM:SS.m", "Verification Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             else
             {
+                if (txtTimeStart.Text.Length < 8)
+                {
+                    // Input is valid against regex, but we have to add missing zeroes
+                    string correctedTimeInput = Helper.fillMissingZeroes(txtTimeStart.Text);
+                    txtTimeStart.Text = correctedTimeInput;
+                }
+
                 // Calculates the seconds from the time-code
                 double seconds = Helper.convertToSeconds(txtTimeStart.Text);
+                string millis = Helper.getMillisFromTimeStart(txtTimeStart.Text);
 
-                if (seconds > 30)
+                if (txtSubs.Text == "")
                 {
-                    if (txtSubs.Text == "")
-                    {
-                        // If not subtitles exist
-                        baseCommand = baseCommand.Replace("{time1}", "-ss " + Convert.ToString(seconds - 30));
-                        baseCommand = baseCommand.Replace("{time2}", "-ss 30");
-                    }
-                    else
-                    {
-                        // If subtitles exist
-                        baseCommand = baseCommand.Replace(" {time1}", "");
-                        baseCommand = baseCommand.Replace("{time2}", "-ss " + Convert.ToString(seconds));
-                    }
+                    // If not subtitles exist
+                    baseCommand = baseCommand.Replace(" {time1}", "");
+                    baseCommand = baseCommand.Replace("{time2}", "-ss " + seconds + millis);
                 }
                 else
                 {
+                    // If subtitles exist
                     baseCommand = baseCommand.Replace(" {time1}", "");
-                    baseCommand = baseCommand.Replace("{time2}", "-ss " + seconds);
+                    baseCommand = baseCommand.Replace("{time2}", "-ss " + Convert.ToString(seconds) + millis);
                 }
+
             }
 
             // Validates if the user input a value for txtLength
@@ -245,15 +256,19 @@ namespace MasterOfWebM
             {
                 baseCommand = baseCommand.Replace("{metadata}", string.Format("-metadata title=\"{0}\"", txtTitle.Text.Replace("\"", "\\\"")));
             }
+            else
+            {
+                baseCommand = baseCommand.Replace("{metadata}", "");
+            }
 
             // If everything is valid, continue with the conversion
             if (verified)
             {
                 baseCommand = baseCommand.Replace("{threads}", THREADS);
-
                 try
                 {
                     Helper.encodeVideo(baseCommand, txtOutput.Text);
+                    statusLabel.Text = " last success: " + generateFilenamePartBasedOnTimeSelection();
                 }
                 catch (Win32Exception ex)
                 {
@@ -345,13 +360,36 @@ namespace MasterOfWebM
             btnConvert.Enabled = true;
         }
 
+        private string generateFilenamePartBasedOnTimeSelection()
+        {
+            return " " + txtTimeStart.Text.Replace(":", "").TrimStart('0') + " " + txtLength.Text;
+        }
+
+        private string tryToParseOnlyNumbersAsHHMMSS(string time)
+        {
+            string millis = Helper.getMillisFromTimeStart(time);
+            time = Helper.getHHMMSSFromTimeStart(time);
+            if (int.TryParse(time, out int unused))
+            {
+                if (time.Length > 2)
+                {
+                    time = time.Substring(0, time.Length - 2) + ":" + time.Substring(time.Length - 2);
+                }
+                if (time.Length > 5)
+                {
+                    time = time.Substring(0, time.Length - 5) + ":" + time.Substring(time.Length - 5);
+                }
+            }
+            return time + millis;
+        }
+
         private void btnInput_Click(object sender, EventArgs e)
         {
             if (inputFileDialog.ShowDialog() == DialogResult.OK)
             {
                 txtInput.Text = inputFileDialog.FileName;
+                txtTimeStart.Focus();
             }
-
         }
 
         private void btnOutput_Click(object sender, EventArgs e)
@@ -359,6 +397,7 @@ namespace MasterOfWebM
             if (saveFileDialog1.ShowDialog() == DialogResult.OK)
             {
                 txtOutput.Text = saveFileDialog1.FileName;
+                txtTimeStart.Focus();
             }
         }
 
@@ -373,7 +412,7 @@ namespace MasterOfWebM
                 btnConvert.Enabled = false;
             }
 
-            Helper.checkUpdate();
+            Helper.checkUpdateInNewThread();
         }
 
         // Handles when the user focuses txtCrop
@@ -413,14 +452,16 @@ namespace MasterOfWebM
         private void btnClear_Click(object sender, EventArgs e)
         {
             txtInput.Text = txtOutput.Text = txtSubs.Text = txtLength.Text = txtWidth.Text = "";
-            txtTimeStart.Text = "HH:MM:SS";
+            txtTimeStart.Text = "HH:MM:SS.m";
             txtTimeStart.ForeColor = Color.Silver;
-            txtMaxSize.Text = "3";
+            txtMaxSize.Text = "4";
             txtCrop.Text = "o_w:o_h:x:y";
             txtCrop.ForeColor = Color.Silver;
             txtTitle.Text = "";
             comboQuality.SelectedIndex = 0;
-            checkAudio.Checked = false;
+            checkAudio.Checked = true;
+            txtTimeStart.Focus();
+            statusLabel.BackColor = SystemColors.Control;
         }
 
         private void comboQuality_SelectedIndexChanged(object sender, EventArgs e)
@@ -449,6 +490,43 @@ namespace MasterOfWebM
             var files = (string[])e.Data.GetData(DataFormats.FileDrop);
 
             txtInput.Text = files[0];
+            txtTimeStart.Focus();
+            //bring to front after drag&drop
+            this.TopMost = true;
+            this.TopMost = false;
         }
+
+        private bool overwriteExistingFileIfExists()
+        {
+            FileInfo fi = new FileInfo(txtOutput.Text);
+            if (fi.Exists)
+            {
+                DialogResult dialogResult = MessageBox.Show("Overwrite " + txtOutput.Text + "?", "Output file exists", MessageBoxButtons.YesNo);
+                if (dialogResult == DialogResult.No)
+                {
+                    saveFileDialog1.FileName = txtOutput.Text;
+                    if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+                    {
+                        txtOutput.Text = saveFileDialog1.FileName;
+                        return true;
+                    }
+                    else
+                    {
+                        txtOutput.Text = "";
+                    }
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        private void buttonPlay_Click(object sender, EventArgs e)
+        {
+            if (txtInput.Text.Length > 0 && new FileInfo(txtInput.Text).Exists)
+            {
+                Process.Start(txtInput.Text);
+            }
+        }
+
     }
 }
